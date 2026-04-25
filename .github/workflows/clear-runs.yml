@@ -1,0 +1,21 @@
+name: Clear Runs
+on:
+  workflow_dispatch:
+    inputs:
+      repository_name:
+        description: Repository name
+        default: aliucord-plugins
+        required: true
+      workflow_name:
+        description: Workflow name
+
+jobs:
+  clear-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+        run: |
+          gh api --paginate --jq ".workflow_runs[].id" "/repos/${{ github.repository_owner }}/${{ inputs.repository_name }}/actions/${{ inputs.workflow_name && format('workflows/{0}/', inputs.workflow_name) || '' }}runs?status=completed" \
+            | xargs -r -I {} gh run delete --repo "${{ github.repository_owner }}/${{ inputs.repository_name }}" {}
