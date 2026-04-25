@@ -27,7 +27,7 @@ jobs:
           name_is_regexp: true
 
       - name: Download input file
-        run: printf "INPUT_FILENAME=$(curl -LOJ -w "%{filename_effective}" "${{ inputs.file_link }}")" >> "$GITHUB_ENV"
+        run: printf "INPUT_FILENAME=$(curl -LOJ -w %{filename_effective} "${{ inputs.file_link }}")" >> "$GITHUB_ENV"
 
       - name: Decompile input file
         run: |
@@ -37,7 +37,7 @@ jobs:
             --no-inline-kotlin-lambda \
             --no-inline-methods \
             --no-move-inner-classes \
-            --output-dir "output" \
+            --output-dir output \
             --respect-bytecode-access-modifiers \
             --show-bad-code \
             --export-gradle \
