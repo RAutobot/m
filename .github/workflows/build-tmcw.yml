@@ -10,15 +10,15 @@ jobs:
       - name: Download and extract files
         run: |
           curl -L \
-            -o "$VERSION_NAME.jar" "https://launcher.mojang.com/v1/objects/1703704407101cf72bd88e68579e3696ce733ecd/client.jar" \
-            -o "$VERSION_NAME.zip" "https://www.dropbox.com/scl/fi/tssvedc0xhb6dk6anap41/TMCWv5.10.zip?rlkey=rf98ln8zcmn52kttvv7mb1umg&dl=1"
+            -o "$VERSION_NAME.jar" https://launcher.mojang.com/v1/objects/1703704407101cf72bd88e68579e3696ce733ecd/client.jar \
+            -o "$VERSION_NAME.zip" https://www.dropbox.com/scl/fi/tssvedc0xhb6dk6anap41/TMCWv5.10.zip?rlkey=rf98ln8zcmn52kttvv7mb1umg&dl=1
 
           unzip "$VERSION_NAME.zip"
 
       - name: Patch JAR
         run: |
           zip -d "$VERSION_NAME.jar" "META-INF/*"
-          jar -u -f "$VERSION_NAME.jar" -C "Mod" .
+          jar -u -f "$VERSION_NAME.jar" -C Mod .
 
           install -D -t "output/$VERSION_NAME" "$VERSION_NAME.jar" "$VERSION_NAME.json"
 
