@@ -41,7 +41,7 @@ jobs:
           gradle init \
             --no-comments \
             --no-split-project \
-            --dsl "kotlin" \
+            --dsl kotlin \
             --java-version 25 \
             --package "${{ inputs.package_name }}" \
             --project-name "${{ inputs.project_name }}" \
@@ -67,10 +67,10 @@ jobs:
         run: |
           keytool \
             -alias "${{ inputs.key_alias }}" \
-            -dname "CN=release" \
-            -keyalg "RSA" \
+            -dname CN=release \
+            -keyalg RSA \
             -keypass "${{ inputs.keystore_password }}" \
-            -keystore "release.keystore" \
+            -keystore release.keystore \
             -storepass "${{ inputs.keystore_password }}" \
             -validity 9999
 
