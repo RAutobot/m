@@ -1,0 +1,28 @@
+name: Build TMCW
+on: workflow_dispatch
+
+jobs:
+  build-tmcw:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      VERSION_NAME: TMCWv5.10
+    steps:
+      - name: Patch JAR
+        run: |
+          curl -L -o "$VERSION_NAME.zip" "https://www.dropbox.com/scl/fi/tssvedc0xhb6dk6anap41/TMCWv5.10.zip?rlkey=rf98ln8zcmn52kttvv7mb1umg&dl=1"
+          unzip "$VERSION_NAME.zip"
+
+          curl -L -o "$VERSION_NAME.jar" "https://launcher.mojang.com/v1/objects/1703704407101cf72bd88e68579e3696ce733ecd/client.jar"
+          zip -d "$VERSION_NAME.jar" "META-INF/*"
+          (cd Mod && zip -ur "$VERSION_NAME.jar" .)
+
+      - name: Stage output
+        run: zip TMCW.zip "$VERSION_NAME.jar" "$VERSION_NAME.json"
+
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: artifacts
+          files: ${{ env.VERSION_NAME }}.zip
