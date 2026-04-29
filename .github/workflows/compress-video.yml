@@ -9,13 +9,13 @@ on:
         description: Video scale
         type: choice
         options:
-          - 144
-          - 240
-          - 360
-          - 480
-          - 720
-          - 1080
           - -2
+          - 1080
+          - 720
+          - 480
+          - 360
+          - 240
+          - 144
 
 env:
   VIDEO_LINK: ${{ inputs.video_link }}
