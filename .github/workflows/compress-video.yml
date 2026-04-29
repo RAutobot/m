@@ -26,9 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install FFmpeg
-        run: |
-          curl -L "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz" | tar -xJ -f -
-          ls -R
+        run: curl -L "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz" | tar -xJ -f -
 
       - name: Download video
         run: |
@@ -39,7 +37,7 @@ jobs:
 
       - name: Compress video
         run: |
-          ffmpeg \
+          ./*/bin/ffmpeg \
             -i "$INPUT_FILENAME" \
             -c:a copy \
             -c:v libx265 \
