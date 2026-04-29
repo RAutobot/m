@@ -1,0 +1,28 @@
+name: Extract Boot Image
+on:
+  workflow_dispatch:
+    inputs:
+      fastboot_rom_link:
+        description: Fastboot ROM link
+        required: true
+
+env:
+  FASTBOOT_ROM_LINK: ${{ inputs.fastboot_rom_link }}
+
+jobs:
+  extract-boot-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Extract boot image
+        run: curl -L "$FASTBOOT_ROM_LINK" | tar -xz -f - --occurrence --strip-components=2 --wildcards "*/images/boot.img"
+
+      - name: Stage output
+        run: zip boot.zip boot.img
+
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: outputs
+          files: boot.zip

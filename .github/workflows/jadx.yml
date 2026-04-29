@@ -1,0 +1,58 @@
+name: JADX
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_link:
+        description: File link
+        required: true
+
+env:
+  FILE_LINK: ${{ inputs.file_link }}
+
+jobs:
+  jadx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: 25
+          distribution: temurin
+
+      - name: Download JADX
+        uses: dawidd6/action-download-artifact@v20
+        with:
+          repo: skylot/jadx
+          branch: master
+          workflow: build-artifacts.yml
+          name: (?<!win)$
+          name_is_regexp: true
+
+      - name: Download file
+        run: |
+          filename="$(curl -LOJ -w %{filename_effective} "$FILE_LINK")"
+          printf "%s\n" "INPUT_FILENAME=$filename" >> "$GITHUB_ENV"
+
+      - name: Decompile
+        run: |
+          sh */bin/jadx \
+            --fs-case-sensitive \
+            --no-inline-anonymous \
+            --no-inline-kotlin-lambda \
+            --no-inline-methods \
+            --no-move-inner-classes \
+            --respect-bytecode-access-modifiers \
+            --show-bad-code \
+            --export-gradle \
+            --output-dir output \
+            "$INPUT_FILENAME" || true
+
+      - name: Remove metadata annotations
+        run: find . -type f -name "*.java" -exec sed -i "/@kotlin.Metadata(/d; /@Metadata(/d; /import kotlin.Metadata/d" {} +
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: output
+          path: output

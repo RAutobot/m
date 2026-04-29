@@ -1,0 +1,27 @@
+name: File Info
+on:
+  workflow_dispatch:
+    inputs:
+      file_link:
+        description: File link
+        required: true
+
+env:
+  FILE_LINK: ${{ inputs.file_link }}
+
+jobs:
+  file-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download file
+        run: |
+          filename="$(curl -LOJ -w %{filename_effective} "$FILE_LINK")"
+          printf "%s\n" "INPUT_FILENAME=$filename" >> "$GITHUB_ENV"
+
+      - name: File info
+        run: |
+          cksum -a md5 "$INPUT_FILENAME"
+          cksum -a sha256 "$INPUT_FILENAME"
+          cksum -a sha512 "$INPUT_FILENAME"
+
+          7z t -scrcSHA256 "$INPUT_FILENAME"

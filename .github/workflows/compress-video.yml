@@ -1,0 +1,49 @@
+name: Compress Video
+on:
+  workflow_dispatch:
+    inputs:
+      video_link:
+        description: Video link
+        required: true
+      video_scale:
+        description: Video scale
+        default: 144
+        type: number
+        required: true
+
+env:
+  VIDEO_LINK: ${{ inputs.video_link }}
+  VIDEO_SCALE: ${{ inputs.video_scale }}
+
+jobs:
+  compress-video:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends ffmpeg
+
+      - name: Download video
+        run: |
+          filename="$(curl -LOJ -w %{filename_effective} "$VIDEO_LINK")"
+          basename="${filename%.*}"
+
+          printf "%s\n" "INPUT_FILENAME=$filename" "OUTPUT_FILENAME=$basename_compressed.mp4" >> "$GITHUB_ENV"
+
+      - name: Compress video
+        run: |
+          ffmpeg \
+            -i "$INPUT_FILENAME" \
+            -c:a copy \
+            -c:v libx265 \
+            -crf 30 \
+            -vf "scale=if(gt(iw,ih),-2,$VIDEO_SCALE):if(gt(iw,ih),$VIDEO_SCALE,-2)" \
+            -preset slow \
+            "$OUTPUT_FILENAME"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          archive: false
+          path: ${{ env.OUTPUT_FILENAME }}

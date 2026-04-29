@@ -1,0 +1,35 @@
+name: Download Source Code
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: Repository name with owner
+        required: true
+      ref:
+        description: The branch, tag or SHA to checkout
+
+env:
+  REPOSITORY: ${{ inputs.repository }}
+  REF: ${{ inputs.ref }}
+
+jobs:
+  download-source-code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ env.REPOSITORY }}
+          ref: ${{ env.REF }}
+
+      - name: Stage output
+        run: |
+          rm -rf .git
+          grep -rIL . | xargs -r truncate -s 0
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: output
+          path: .
+          include-hidden-files: true
