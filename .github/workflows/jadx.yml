@@ -36,7 +36,7 @@ jobs:
 
       - name: Decompile
         run: |
-        ./*/bin/jadx \
+          ./*/bin/jadx \
             --fs-case-sensitive \
             --no-inline-anonymous \
             --no-inline-kotlin-lambda \
