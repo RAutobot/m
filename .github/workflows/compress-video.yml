@@ -35,7 +35,7 @@ jobs:
           filename="$(curl -LOJ -w %{filename_effective} "$VIDEO_LINK")"
           basename="${filename%.*}"
 
-          printf "%s\n" "INPUT_FILENAME=$filename" "OUTPUT_FILENAME=$basename_compressed.mp4" >> "$GITHUB_ENV"
+          printf "%s\n" "INPUT_FILENAME=$filename" "OUTPUT_FILENAME=${basename}_compressed.mp4" >> "$GITHUB_ENV"
 
       - name: Compress video
         run: |
