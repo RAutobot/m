@@ -44,7 +44,7 @@ jobs:
             -c:a copy \
             -c:v libx265 \
             -crf 30 \
-            -vf "scale=if(gt(iw,ih),-2,$VIDEO_SCALE):if(gt(iw,ih),$VIDEO_SCALE,-2)" \
+            -vf "scale='if(gt(iw,ih),-2,$VIDEO_SCALE)':'if(gt(iw,ih),$VIDEO_SCALE,-2)'" \
             -preset slow \
             "$OUTPUT_FILENAME"
 
