@@ -35,7 +35,7 @@ jobs:
           filename="$(curl -LOJ -w %{filename_effective} "$VIDEO_LINK")"
           basename="${filename%.*}"
 
-          printf "%s\n" "INPUT_FILENAME=$filename" "OUTPUT_FILEPATH=output/${basename}.mp4" >> "$GITHUB_ENV"
+          printf "%s\n" "INPUT_FILENAME=$filename" "OUTPUT_FILENAME=${basename}_compressed.mp4" >> "$GITHUB_ENV"
 
       - name: Compress video
         run: |
@@ -46,10 +46,10 @@ jobs:
             -crf 30 \
             -vf "scale='if(gt(iw,ih),-2,$VIDEO_SCALE)':'if(gt(iw,ih),$VIDEO_SCALE,-2)'" \
             -preset slow \
-            "$OUTPUT_FILEPATH"
+            "$OUTPUT_FILENAME"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          path: ${{ env.OUTPUT_FILEPATH }}
+          path: ${{ env.OUTPUT_FILENAME }}
