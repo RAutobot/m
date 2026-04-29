@@ -7,9 +7,16 @@ on:
         required: true
       video_scale:
         description: Video scale
-        default: 144
-        type: number
-        required: true
+        type: choice
+        options:
+          - -1
+          - -2
+          - 144
+          - 240
+          - 360
+          - 480
+          - 720
+          - 1080
 
 env:
   VIDEO_LINK: ${{ inputs.video_link }}
