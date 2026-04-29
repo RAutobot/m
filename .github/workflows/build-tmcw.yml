@@ -10,24 +10,24 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Download files
+      - name: Download and extract files
         run: |
           curl -L \
             -o "$VERSION_NAME.zip" "https://www.dropbox.com/scl/fi/tssvedc0xhb6dk6anap41/TMCWv5.10.zip?rlkey=rf98ln8zcmn52kttvv7mb1umg&dl=1" \
             -o "$VERSION_NAME.jar" "https://launcher.mojang.com/v1/objects/1703704407101cf72bd88e68579e3696ce733ecd/client.jar"
 
+          unzip *.zip
+
       - name: Patch JAR
         run: |
-          unzip "$VERSION_NAME.zip"
-
-          zip -d "$VERSION_NAME.jar" "META-INF/*"
-          (cd Mod && zip -ur "$VERSION_NAME.jar" .)
+          zip -d *.jar "META-INF/*"
+          (cd Mod && zip -ur *.jar .)
 
       - name: Stage output
-        run: zip TMCW.zip "$VERSION_NAME.jar" "$VERSION_NAME.json"
+        run: zip TMCW.zip *.jar *.json
 
       - name: Release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: outputs
-          files: ${{ env.VERSION_NAME }}.zip
+          files: TMCW.zip
