@@ -16,7 +16,7 @@ jobs:
       contents: write
     steps:
       - name: Extract boot image
-        run: curl -L "$FASTBOOT_ROM_LINK" | tar -x -f - --occurrence --strip-components=2 --wildcards "*/images/boot.img"
+        run: curl -L "$FASTBOOT_ROM_LINK" | tar -xz -f - --occurrence --strip-components=2 --wildcards "*/images/boot.img"
 
       - name: Stage output
         run: zip boot.zip boot.img
