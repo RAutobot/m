@@ -13,20 +13,18 @@ jobs:
       APK_URL: ${{ inputs.apk_url }}
     steps:
       - name: Download APK
-        run: |
-          filename="$(curl -LOJ -w "%{filename_effective}" "$APK_URL")"
-          printf "%s\n" "INPUT_FILENAME=$filename" >> "$GITHUB_ENV"
+        run: curl -L -o app.apk "$APK_URL"
 
       - name: Strip APK architecture
-        run: zip -d "$INPUT_FILENAME" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*"
+        run: zip -d app.apk "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*"
 
       - name: Checksum
         run: |
-          cksum -a md5 "$INPUT_FILENAME"
-          cksum -a sha256 "$INPUT_FILENAME"
+          cksum -a md5 app.apk
+          cksum -a sha256 app.apk
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: output
-          path: ${{ env.INPUT_FILENAME }}
+          path: app.apk
