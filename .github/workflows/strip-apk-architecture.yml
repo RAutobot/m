@@ -21,8 +21,8 @@ jobs:
         run: |
           zip -d "$INPUT_FILENAME" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*"
 
-          7z h -r -scrcMD5 "$INPUT_FILENAME"
-          7z h -r -scrcSHA256 "$INPUT_FILENAME"
+          7z h -r -scrcMD5
+          7z h -r -scrcSHA256
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
