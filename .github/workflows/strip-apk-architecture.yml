@@ -1,4 +1,4 @@
-name: Strip APK Arch
+name: Strip APK Architecture
 on:
   workflow_dispatch:
     inputs:
@@ -7,7 +7,7 @@ on:
         required: true
 
 jobs:
-  strip-apk-arch:
+  strip-apk-architecture:
     runs-on: ubuntu-latest
     env:
       APK_URL: ${{ inputs.apk_url }}
@@ -17,7 +17,7 @@ jobs:
           filename="$(curl -LOJ -w "%{filename_effective}" "$APK_URL")"
           printf "%s\n" "INPUT_FILENAME=$filename" >> "$GITHUB_ENV"
 
-      - name: Strip APK arch
+      - name: Strip APK architecture
         run: zip -d "$INPUT_FILENAME" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*"
 
       - name: Upload artifact
