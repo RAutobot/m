@@ -1,0 +1,89 @@
+name: Gradle
+on:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: Package name
+        default: com.example
+      project_name:
+        description: Project name
+        default: example-project
+      project_type:
+        description: Project type
+        type: choice
+        options:
+          - basic
+          - java-application
+          - java-library
+          - kotlin-application
+          - kotlin-library
+      keystore_alias:
+        description: Key alias
+        default: androidrelease
+        required: true
+      keystore_password:
+        description: Keystore password
+        default: androidreleasekey
+        required: true
+
+jobs:
+  initialize-project:
+    runs-on: ubuntu-latest
+    env:
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      PROJECT_NAME: ${{ inputs.project_name }}
+      PROJECT_TYPE: ${{ inputs.project_type }}
+    steps:
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: current
+          cache-disabled: true
+
+      - name: Initialize project
+        run: |
+          gradle init \
+            --no-comments \
+            --no-split-project \
+            --package "$PACKAGE_NAME" \
+            --project-name "$PROJECT_NAME" \
+            --type "$PROJECT_TYPE" \
+            --dsl kotlin \
+            --java-version 25
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: project
+          path: .
+          include-hidden-files: true
+
+  generate-keystore:
+    runs-on: ubuntu-latest
+    env:
+      KEYSTORE_PASSWORD: ${{ inputs.keystore_password }}
+      KEYSTORE_ALIAS: ${{ inputs.keystore_alias }}
+    steps:
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: 25
+          distribution: temurin
+
+      - name: Generate keystore
+        run: |
+          keytool \
+            -genkeypair \
+            -keystore release.keystore \
+            -alias "$KEYSTORE_ALIAS" \
+            -storepass "$KEYSTORE_PASSWORD" \
+            -keypass "$KEYSTORE_PASSWORD" \
+            -dname "CN=release" \
+            -keyalg RSA \
+            -validity 9999
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: keystore
+          path: release.keystore

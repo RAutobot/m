@@ -1,0 +1,27 @@
+name: Strip APK Arch
+on:
+  workflow_dispatch:
+    inputs:
+      apk_url:
+        description: APK URL
+        required: true
+
+jobs:
+  strip-apk-arch:
+    runs-on: ubuntu-latest
+    env:
+      APK_URL: ${{ inputs.apk_url }}
+    steps:
+      - name: Download APK
+        run: |
+          filename="$(curl -LOJ -w "%{filename_effective}" "$APK_URL")"
+          printf "%s\n" "INPUT_FILENAME=$filename" >> "$GITHUB_ENV"
+
+      - name: Strip APK arch
+        run: zip -d "$INPUT_FILENAME" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: output
+          path: ${{ env.INPUT_FILENAME }}

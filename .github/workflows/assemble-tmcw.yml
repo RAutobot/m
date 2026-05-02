@@ -1,0 +1,28 @@
+name: Assemble TMCW
+on: workflow_dispatch
+
+jobs:
+  assemble-tmcw:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Assemble TMCW
+        run: |
+          curl -L \
+            -o TMCW.zip "https://www.dropbox.com/scl/fi/tssvedc0xhb6dk6anap41/TMCWv5.10.zip?rlkey=rf98ln8zcmn52kttvv7mb1umg&dl=1" \
+            -o TMCWv5.10.jar "https://launcher.mojang.com/v1/objects/1703704407101cf72bd88e68579e3696ce733ecd/client.jar"
+
+          unzip TMCW.zip "Mod/*"
+          zip -d TMCW.zip "Mod/*"
+
+          (cd Mod && zip -r ../TMCWv5.10.jar .)
+          zip -d TMCWv5.10.jar "META-INF/*"
+
+          zip TMCW.zip TMCWv5.10.jar
+
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: outputs
+          files: TMCW.zip
