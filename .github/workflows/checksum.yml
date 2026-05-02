@@ -1,28 +1,21 @@
 name: Checksum
-run-name: Checksum (${{ inputs.digest_algorithm }})
 on:
   workflow_dispatch:
     inputs:
       file_url:
         description: File URL
         required: true
-      digest_algorithm:
-        description: Digest algorithm
-        type: choice
-        options:
-          - MD5
-          - SHA256
-          - SHA512
 
 jobs:
   checksum:
     runs-on: ubuntu-latest
     env:
       FILE_URL: ${{ inputs.file_url }}
-      DIGEST_ALGORITHM: ${{ inputs.digest_algorithm }}
     steps:
       - name: Download file
         run: 7z x "$(curl -LOJ -w "%{filename_effective}" "$FILE_URL")" || true
 
       - name: Checksum
-        run: 7z h -r -scrc"$DIGEST_ALGORITHM"
+        run: |
+          7z h -r -scrcMD5
+          7z h -r -scrcSHA256
