@@ -74,11 +74,11 @@ jobs:
         run: |
           keytool \
             -genkeypair \
-            -keystore release.p12 \
+            -keystore keystore.p12 \
             -alias "$KEYSTORE_ALIAS" \
             -storepass "$KEYSTORE_PASSWORD" \
             -keypass "$KEYSTORE_PASSWORD" \
-            -dname "CN=release" \
+            -dname "CN=Android" \
             -keyalg RSA \
             -validity 9999
 
@@ -86,4 +86,4 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          path: p12.keystore
+          path: keystore.p12
