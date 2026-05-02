@@ -9,7 +9,6 @@ on:
         required: true
       video_scale:
         description: Video scale
-        default: "144"
         type: choice
         options:
           - -2
