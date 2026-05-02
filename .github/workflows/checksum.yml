@@ -16,4 +16,7 @@ jobs:
         run: 7z x "$(curl -LOJ -w "%{filename_effective}" "$FILE_URL")" || true
 
       - name: Checksum
-        run: find . -type f -exec cksum -a md5 {} + -exec cksum -a sha256 {} +
+        run: |
+          find . -type f -exec cksum -a md5 {} +
+          printf "\n"
+          find . -type f -exec cksum -a sha256 {} +
