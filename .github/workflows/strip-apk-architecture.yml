@@ -18,9 +18,10 @@ jobs:
           printf "%s\n" "INPUT_FILENAME=$filename" >> "$GITHUB_ENV"
 
       - name: Strip APK architecture
-        run: |
-          zip -d "$INPUT_FILENAME" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*"
+        run: zip -d "$INPUT_FILENAME" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*"
 
+      - name: Checksum
+        run: |
           cksum -a md5 "$INPUT_FILENAME"
           cksum -a sha256 "$INPUT_FILENAME"
 
