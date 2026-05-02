@@ -7,12 +7,14 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Assemble TMCW
+      - name: Download files
         run: |
           curl -L \
             -o TMCW.zip "https://www.dropbox.com/scl/fi/tssvedc0xhb6dk6anap41/TMCWv5.10.zip?rlkey=rf98ln8zcmn52kttvv7mb1umg&dl=1" \
             -o TMCWv5.10.jar "https://launcher.mojang.com/v1/objects/1703704407101cf72bd88e68579e3696ce733ecd/client.jar"
 
+      - name: Assemble TMCW
+        run: |
           unzip TMCW.zip "Mod/*"
           zip -d TMCW.zip "Mod/*"
 
