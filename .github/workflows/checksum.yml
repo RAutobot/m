@@ -25,4 +25,4 @@ jobs:
         run: 7z x "$(curl -LOJ -w "%{filename_effective}" "$FILE_URL")" || true
 
       - name: Checksum
-        run: 7z h -r "-scrc$DIGEST_ALGORITHM"
+        run: 7z h -r -scrc="$DIGEST_ALGORITHM"
